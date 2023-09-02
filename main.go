@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
@@ -23,6 +24,9 @@ func main() {
 
 	rand.Seed(time.Now().UnixNano())
 	r := gin.Default()
+
+	// Enable CORS
+	r.Use(cors.Default())
 
 	client, err := mongo.NewClient(options.Client().ApplyURI(os.Getenv("MONGO_URI")))
 	if err != nil {
