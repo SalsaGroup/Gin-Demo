@@ -42,9 +42,10 @@ func main() {
 	}
 	defer client.Disconnect(ctx)
 
-	collection := client.Database("test").Collection("phrases")
+	// Change the collection to 'recipes'
+	collection := client.Database("test").Collection("recipes")
 
-	r.GET("/", func(c *gin.Context) {
+	r.GET("/recipe", func(c *gin.Context) {
 		reqCtx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 
@@ -53,23 +54,23 @@ func main() {
 			fmt.Println(err)
 			return
 		}
-		var phrases []bson.M
-		err = cursor.All(reqCtx, &phrases)
+		var recipes []bson.M
+		err = cursor.All(reqCtx, &recipes)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 
-		if len(phrases) > 0 {
-			randomIndex := rand.Intn(len(phrases))
-			randomPhrase := phrases[randomIndex]
+		if len(recipes) > 0 {
+			randomIndex := rand.Intn(len(recipes))
+			randomRecipe := recipes[randomIndex]
 
 			c.JSON(200, gin.H{
-				"message": randomPhrase["phrase"],
+				"recipe": randomRecipe,
 			})
 		} else {
 			c.JSON(200, gin.H{
-				"message": "No phrases in the database",
+				"message": "No recipes in the database",
 			})
 		}
 	})
